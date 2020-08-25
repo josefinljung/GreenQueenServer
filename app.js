@@ -32,7 +32,7 @@ app.get("/dummyguest", async (req, res) => {
         Date: 14/5/20,
         Time: 18.00,
         Amount: 6,
-        Guest: guestId[{}]
+        Guest: guestId[{}]  
     })
 
     await objectdatasomskullekommafromdatabase.save((error, success) =>{
