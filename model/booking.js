@@ -5,10 +5,15 @@ const schema = new moongoose.Schema({
     Date: Date,
     Time: Number,
     Amount: Number,
-    GuestId: Number,
+    Guest: [{
+        guestId: {
+            type: moongoose.Schema.Types.ObjectId,
+            ref: "guest"
+        }
+    }]
 });
 
-const bookingId = moongoose.model("booking", schema);
+const booking = moongoose.model("booking", schema);
 
-module.exports = bookingId;
+module.exports = booking;
 
