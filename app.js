@@ -32,7 +32,7 @@ app.get("/dummyguest", async (req, res) => {
         Date: 14/5/20,
         Time: 18.00,
         Amount: 6,
-        Guest: guestId[{}]  
+        GuestId: 12
     })
 
     await objectdatasomskullekommafromdatabase.save((error, success) =>{
@@ -40,13 +40,19 @@ app.get("/dummyguest", async (req, res) => {
             res.send(error.message)
         }
     })
-
     res.send(objectdatasomskullekommafromdatabase)
-
 
 })
 
+app.get("/bookings", async (req, res )=> {
 
+    // funktion for att hamta alla
+
+    const bookings = await booking.find();
+
+    res.send(bookings);
+
+})
 
 app.listen(port, () => console.log(`App listening on port ${port}!`));
 
