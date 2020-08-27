@@ -5,6 +5,7 @@ const schema = new moongoose.Schema({
     Date: Date,
     Time: Number,
     Amount: Number,
+    Table: Number,
     GuestId: Number
 });
 

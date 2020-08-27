@@ -26,12 +26,13 @@ app.get("/dummyguest", async (req, res) => {
 
      const guest = await booking.findOne();
      console.log(guest);
-
+     
     const objectdatasomskullekommafromdatabase =  new booking ({
         Id: 12,
         Date: 14/5/20,
         Time: 18.00,
         Amount: 6,
+        Table: 1,  // increment here 
         GuestId: 12
     })
 
