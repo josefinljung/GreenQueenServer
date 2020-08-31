@@ -55,6 +55,18 @@ app.get("/bookings", async (req, res )=> {
 
 })
 
+app.get("/search", async (req,res)=> {
+
+    const searchBooking = await booking.find()
+
+    res.send(searchBooking)
+})
+
+//booking. find + filter 
+
+
+
+
 app.listen(port, () => console.log(`App listening on port ${port}!`));
 
 module.exports = app;
