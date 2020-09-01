@@ -10,61 +10,75 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
 
 });
 
-const cors = require("cors");
-const app = express();
+    const cors = require("cors");
+    const app = express();
 
-const port = process.env.PORT || 8000;
+    const port = process.env.PORT || 8000;
 
-app.use(cors());
-app.use(bodyParser.json());
+    app.use(cors());
+    app.use(bodyParser.json());
 
-// booking
 
-app.get("/dummyguest", async (req, res) => {
+// Search for booking
 
-     console.log(req.body);
 
-     const guest = await booking.findOne();
-     console.log(guest);
-     
-    const objectdatasomskullekommafromdatabase =  new booking ({
-        Id: 12,
-        Date: 14/5/20,
-        Time: 18.00,
-        Amount: 6,
-        Table: 1,  // increment here 
-        GuestId: 12
+    app.get("/search",  async (req,res)=> {
+
+        const searchBooking = await booking.find({
+            time : req.query.Time,
+            date : req.query.Date
+        })
+
+        res.send(searchBooking)
+        console.log(searchBooking);
     })
 
-    await objectdatasomskullekommafromdatabase.save((error, success) =>{
-        if (error){
-            res.send(error.message)
-        }
+
+// Create new booking
+
+
+    app.get("/createbooking", async (req, res) => {
+
+        console.log(req.body);
+
+        const guest = await booking.findOne();
+        console.log(guest);
+        
+        const objectdatasomskullekommafromdatabase =  new booking ({
+            Id: 12,
+            Date: 14/5/20,
+            Time: 18.00,
+            Amount: 6,
+            Table: 1,  // increment here 
+            GuestId: 12
+        })
+
+        await objectdatasomskullekommafromdatabase.save((error, success) =>{
+            if (error){
+                res.send(error.message)
+            }
+        })
+        res.send(objectdatasomskullekommafromdatabase)
+
     })
-    res.send(objectdatasomskullekommafromdatabase)
 
-})
 
-app.get("/bookings", async (req, res )=> {
+// Get bookings from create (get) -> post booking to database
 
-    // funktion for att hamta alla
+    app.get("/bookings", async (req, res )=> {
 
-    const bookings = await booking.find();
+        //query string 
+        //query
+        // req.query.time
+        // funktion for att hamta alla
 
-    res.send(bookings);
+        const bookings = await booking.find();
 
-})
+        res.send(bookings);
 
-app.get("/search", async (req,res)=> {
-
-    const searchBooking = await booking.find()
-
-    res.send(searchBooking)
-})
+    })
 
 //booking. find + filter 
-
-
 
 
 app.listen(port, () => console.log(`App listening on port ${port}!`));
