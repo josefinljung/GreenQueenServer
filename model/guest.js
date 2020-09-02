@@ -5,7 +5,7 @@ const schema = new moongoose.Schema({
     FirstName: String,
     LastName: String,
     Email: String,
-    Phone: Number
+    Phone: String
 });
 
 const guestId = moongoose.model("guest", schema);

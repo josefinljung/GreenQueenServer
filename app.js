@@ -1,8 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const config = require("./config/config");
-const guestId = require("./model/guest");
-const booking = require("./model/booking");
+const Guest = require("./model/guest");
+const Booking = require("./model/booking");
 const bodyParser = require("body-parser");
 
 const dbOptions = { useUnifiedTopology: true, useNewUrlParser: true };
@@ -24,42 +24,53 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
 
     app.get("/search",  async (req,res)=> {
 
-        const searchBooking = await booking.find({
+        const searchBooking = await Booking.find({
             time : req.query.Time,
             date : req.query.Date
         })
 
         res.send(searchBooking)
-        console.log(searchBooking);
+        console.log("söker på bokningar");
     })
 
 
 // Create new booking
 
 
-    app.get("/createbooking", async (req, res) => {
-
+    app.post("/createbooking", async (req, res) => {
         console.log(req.body);
-
-        const guest = await booking.findOne();
-        console.log(guest);
-        
-        const objectdatasomskullekommafromdatabase =  new booking ({
-            Id: 12,
-            Date: 14/5/20,
-            Time: 18.00,
-            Amount: 6,
-            Table: 1,  // increment here 
-            GuestId: 12
-        })
-
-        await objectdatasomskullekommafromdatabase.save((error, success) =>{
-            if (error){
-                res.send(error.message)
-            }
-        })
-        res.send(objectdatasomskullekommafromdatabase)
-
+        const guest = await Guest.findOne({Email: req.body.email});
+        console.log("hittar användare")
+        if(!guest){
+            let newGuest = new Guest ({
+                FirstName: req.body.fname,
+                LastName: req.body.lname,
+                Email: req.body.email,
+                Phone: req.body.phone
+            });
+            await newGuest.save();
+             console.log("ny användare", newGuest);
+                let newBooking = new Booking ({
+                    Id: req.body.id,
+                    Date: req.body.date,
+                    Time: req.body.time,
+                    NumberOfGuests: req.body.numberOfGuests,
+                    GuestId: newGuest._id,
+                });
+                await newBooking.save();
+                res.send(newBooking+ newGuest)
+        }
+        else{
+           let newBooking = new Booking ({
+            Date: req.body.date,
+            Time: req.body.time,
+            NumberOfGuests: req.body.numberOfGuests,
+            GuestId: guest._id,
+            });
+            await newBooking.save();
+                res.send(newBooking)
+        }
+        console.log(req.body.guestId)
     })
 
 
@@ -67,19 +78,11 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
 
     app.get("/bookings", async (req, res )=> {
 
-        //query string 
-        //query
-        // req.query.time
-        // funktion for att hamta alla
-
         const bookings = await booking.find();
 
         res.send(bookings);
 
     })
-
-//booking. find + filter 
-
 
 app.listen(port, () => console.log(`App listening on port ${port}!`));
 
