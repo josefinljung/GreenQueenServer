@@ -11,6 +11,7 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
 });
 
     const cors = require("cors");
+const booking = require("./model/booking");
     const app = express();
 
     const port = process.env.PORT || 8000;
@@ -23,12 +24,12 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
 
 
     app.get("/search",  async (req,res)=> {
-
+        console.log(req.query)
         const searchBooking = await Booking.find({
-            time : req.query.Time,
-            date : req.query.Date
+            Date : req.query.date,
+            Time: req.query.time
         })
-
+console.log(searchBooking)
         res.send(searchBooking)
         console.log("söker på bokningar");
     })
@@ -39,8 +40,11 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
 
     app.post("/createbooking", async (req, res) => {
         console.log(req.body);
+        const bookingnumber = await Booking.find().count()
         const guest = await Guest.findOne({Email: req.body.email});
         console.log("hittar användare")
+
+        if (bookingnumber.length > 15) res.send("fully booked")
         if(!guest){
             let newGuest = new Guest ({
                 FirstName: req.body.fname,
