@@ -21,7 +21,6 @@ const booking = require("./model/booking");
 
 
 // Search for booking
-// HEEEEEJ JOSEFIN !! <3<33<3<3<3<3<<33<3<3<3<3
 
     app.get("/search",  async (req,res)=> {
         console.log(req.query)
