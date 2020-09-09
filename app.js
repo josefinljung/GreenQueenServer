@@ -4,20 +4,34 @@ const config = require("./config/config");
 const Guest = require("./model/guest");
 const Booking = require("./model/booking");
 const bodyParser = require("body-parser");
+var nodemailer = require('nodemailer');
 
 const dbOptions = { useUnifiedTopology: true, useNewUrlParser: true };
+
 mongoose.connect(config.databaseURL, dbOptions).then(() => {
 
 });
 
     const cors = require("cors");
-const booking = require("./model/booking");
+    const booking = require("./model/booking");
     const app = express();
 
     const port = process.env.PORT || 8000;
 
     app.use(cors());
     app.use(bodyParser.json());
+
+
+    var transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+
+        auth: {
+          user: config.email,
+          pass: config.password
+        }
+      });
 
 
 // Search for booking
@@ -28,7 +42,7 @@ const booking = require("./model/booking");
             Date : req.query.date,
             Time: req.query.time
         })
-console.log(searchBooking)
+    console.log(searchBooking)
         res.send(searchBooking)
         console.log("söker på bokningar");
     })
@@ -49,7 +63,7 @@ console.log(searchBooking)
                 FirstName: req.body.fname,
                 LastName: req.body.lname,
                 Email: req.body.email,
-                Phone: req.body.phone
+                Phone: req.body.p
             });
             await newGuest.save();
              console.log("ny användare", newGuest);
@@ -73,9 +87,24 @@ console.log(searchBooking)
             await newBooking.save();
                 res.send(newBooking)
         }
-        console.log(req.body.guestId)
-    })
 
+        console.log(req.body.guestId)
+
+        var mailOptions = {
+            from: 'greenQueenrestaurant@gmail.com',
+            to: guest.Email,
+            subject: 'Hi! Your booking is confirmed',
+            text: 'Thank you' + ' ' + guest.FirstName + ' ' + guest.LastName + '. ' + 'Here is your booking confirmation! Your booking ref is:' + ' ' + guest.id
+          };
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+    })
 
 // Get bookings from create (get) -> post booking to database
 
@@ -86,6 +115,9 @@ console.log(searchBooking)
         res.send(bookings);
 
     })
+
+
+
 
 app.listen(port, () => console.log(`App listening on port ${port}!`));
 
