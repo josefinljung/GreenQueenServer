@@ -11,16 +11,13 @@ const dbOptions = { useUnifiedTopology: true, useNewUrlParser: true };
 mongoose.connect(config.databaseURL, dbOptions).then(() => {
 
 });
-
     const cors = require("cors");
     const booking = require("./model/booking");
     const app = express();
-
     const port = process.env.PORT || 8000;
 
     app.use(cors());
     app.use(bodyParser.json());
-
 
     var transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -32,7 +29,6 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
           pass: config.password
         }
       });
-
 
 // Search for booking
 
@@ -47,9 +43,7 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
         console.log("söker på bokningar");
     })
 
-
 // Create new booking
-
 
     app.post("/createbooking", async (req, res) => {
         console.log(req.body);
@@ -102,9 +96,7 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
                     text: 'Thank you' + ' ' + guest.FirstName + ' ' + guest.LastName + '. ' + 'Here is your booking confirmation! Your booking ref is:' + ' ' + guest.id
                   };
         }
-
         console.log(req.body.guestId)
-
 
         transporter.sendMail(mailOptions, function(error, info){
             if (error) {
@@ -118,15 +110,9 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
 // Get bookings from create (get) -> post booking to database
 
     app.get("/bookings", async (req, res )=> {
-
         const bookings = await booking.find();
-
         res.send(bookings);
-
     })
-
-
-
 
 app.listen(port, () => console.log(`App listening on port ${port}!`));
 
