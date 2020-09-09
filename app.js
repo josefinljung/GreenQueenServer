@@ -67,6 +67,7 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
             });
             await newGuest.save();
              console.log("ny användare", newGuest);
+
                 let newBooking = new Booking ({
                     Id: req.body.id,
                     Date: req.body.date,
@@ -76,6 +77,13 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
                 });
                 await newBooking.save();
                 res.send(newBooking+ newGuest)
+
+                var mailOptions = {
+                    from: 'greenQueenrestaurant@gmail.com',
+                    to: newGuest.Email,
+                    subject: 'Hi! Your booking is confirmed',
+                    text: 'Thank you' + ' ' + newGuest.FirstName + ' ' + newGuest.LastName + '. ' + 'Here is your booking confirmation! Your booking ref is:' + ' ' + newGuest.id
+                  };
         }
         else{
            let newBooking = new Booking ({
@@ -86,16 +94,17 @@ mongoose.connect(config.databaseURL, dbOptions).then(() => {
             });
             await newBooking.save();
                 res.send(newBooking)
+
+                var mailOptions = {
+                    from: 'greenQueenrestaurant@gmail.com',
+                    to: guest.Email,
+                    subject: 'Hi! Your booking is confirmed',
+                    text: 'Thank you' + ' ' + guest.FirstName + ' ' + guest.LastName + '. ' + 'Here is your booking confirmation! Your booking ref is:' + ' ' + guest.id
+                  };
         }
 
         console.log(req.body.guestId)
 
-        var mailOptions = {
-            from: 'greenQueenrestaurant@gmail.com',
-            to: guest.Email,
-            subject: 'Hi! Your booking is confirmed',
-            text: 'Thank you' + ' ' + guest.FirstName + ' ' + guest.LastName + '. ' + 'Here is your booking confirmation! Your booking ref is:' + ' ' + guest.id
-          };
 
         transporter.sendMail(mailOptions, function(error, info){
             if (error) {
